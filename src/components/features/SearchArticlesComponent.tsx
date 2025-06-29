@@ -8,6 +8,7 @@ const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
     []
   );
   const [sourceFilter, setSourceFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,24 +25,55 @@ const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
   }, [searchQuery]);
 
   const availableSources = useMemo(() => {
-    const sources = filteredArticles.map((a) => a.source).filter(Boolean);
+    if (filteredArticles.length === 0) return [];
+    const sources = filteredArticles.map((a) => a?.source);
     return Array.from(new Set(sources));
   }, [filteredArticles]);
 
+  const availableCategories = useMemo(() => {
+    if (filteredArticles.length === 0) return [];
+
+    const categoryKeywords = [
+      "Technology",
+      "Sports",
+      "Politics",
+      "Business",
+      "Health",
+      "Entertainment",
+      "Science",
+    ];
+
+    const foundCategories = new Set<string>();
+
+    filteredArticles.forEach((article) => {
+      const text = `${article?.title} ${article?.description}`.toLowerCase();
+      categoryKeywords.forEach((cat) => {
+        if (text.includes(cat.toLowerCase())) {
+          foundCategories.add(cat);
+        }
+      });
+    });
+
+    return Array.from(foundCategories);
+  }, [filteredArticles]);
+
   const filteredResults = useMemo(() => {
-    console.log("filteredResults", sourceFilter, dateFilter);
     return filteredArticles.filter((article) => {
       const matchesSource = sourceFilter
-        ? article.source === sourceFilter
+        ? article?.source === sourceFilter
         : true;
       const matchesDate = dateFilter
-        ? article.publishedAt?.startsWith(dateFilter)
+        ? article?.publishedAt?.startsWith(dateFilter)
         : true;
-      return matchesSource && matchesDate;
-    });
-  }, [filteredArticles, sourceFilter, dateFilter]);
+      const matchesCategory = categoryFilter
+        ? `${article?.title} ${article?.description}`
+            .toLowerCase()
+            .includes(categoryFilter.toLowerCase())
+        : true;
 
-  console.log("filteredResults", filteredResults);
+      return matchesSource && matchesDate && matchesCategory;
+    });
+  }, [filteredArticles, sourceFilter, dateFilter, categoryFilter]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,6 +111,19 @@ const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               />
+
+              <select
+                className="p-2 border rounded"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                {availableCategories.map((cat, idx) => (
+                  <option key={idx} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
