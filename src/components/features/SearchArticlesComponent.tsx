@@ -89,11 +89,12 @@ const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
       )}
       {filteredArticles.length > 0 && (
         <>
-          <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-4">
             <h2 className="text-2xl font-bold">Searched Stories</h2>
-            <div className="flex gap-2">
+
+            <div className="flex flex-col sm:flex-row gap-2 sm:items-center w-full sm:w-auto">
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded w-full sm:w-auto"
                 value={sourceFilter}
                 onChange={(e) => setSourceFilter(e.target.value)}
               >
@@ -107,13 +108,13 @@ const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
 
               <input
                 type="date"
-                className="p-2 border rounded"
+                className="p-2 border rounded w-full sm:w-auto"
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
               />
 
               <select
-                className="p-2 border rounded"
+                className="p-2 border rounded w-full sm:w-auto"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >

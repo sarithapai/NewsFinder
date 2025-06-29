@@ -14,22 +14,28 @@ const HeaderComponent = () => {
 
   return (
     <header className="w-full bg-gray-100 shadow mb-6 px-4 sm:px-6">
-      <div className="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-24 py-4 sm:py-0 gap-4">
-        <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+      <div className="flex flex-wrap justify-between items-center py-4 gap-4">
+        {/* Logo */}
+        <div className="flex items-center w-full sm:w-auto justify-between sm:justify-start">
           <Logo />
         </div>
 
-        <div className="w-full sm:max-w-md flex justify-end">
-          <SearchBar
-            value={searchQuery}
-            onChange={(text: string) => setSearchQuery(text)}
-            onSearchEnter={() =>
-              router.push(`/search?query=${encodeURIComponent(searchQuery)}`)
-            }
-          />
+        <div className="flex w-full sm:w-auto items-center gap-2">
+          {/* SearchBar with max width */}
+          <div className="flex-grow min-w-0">
+            <SearchBar
+              value={searchQuery}
+              onChange={(text: string) => setSearchQuery(text)}
+              onSearchEnter={() =>
+                router.push(`/search?query=${encodeURIComponent(searchQuery)}`)
+              }
+            />
+          </div>
+
+          {/* Settings Button */}
           <button
             onClick={() => setShowModal(true)}
-            className="ml-2 p-2 rounded hover:bg-gray-200 transition"
+            className="flex-shrink-0 p-2 rounded hover:bg-gray-200 transition"
             aria-label="Customize Feed"
           >
             <Image
