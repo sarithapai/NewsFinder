@@ -1,13 +1,12 @@
-"use client";
-
 import SearchArticlesComponent from "@/components/features/SearchArticlesComponent";
-import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const SearchPage = () => {
-  const searchParams = useSearchParams();
-  const query = searchParams.get("query") || "";
-
-  return <SearchArticlesComponent searchQuery={query} />;
+  return (
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <SearchArticlesComponent />
+    </Suspense>
+  );
 };
 
 export default SearchPage;

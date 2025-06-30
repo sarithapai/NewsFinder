@@ -1,9 +1,14 @@
+"use client";
+
 import { useState, useMemo, useEffect } from "react";
 import NewsCard from "../common/NewsCard";
 import { NormalizedArticle } from "@/lib/normalizeStories";
 import HeaderComponent from "./HeaderComponent";
+import { useSearchParams } from "next/navigation";
 
-const SearchArticlesComponent = ({ searchQuery }: { searchQuery: string }) => {
+const SearchArticlesComponent = () => {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("query") || "";
   const [filteredArticles, setFilteredArticles] = useState<NormalizedArticle[]>(
     []
   );
