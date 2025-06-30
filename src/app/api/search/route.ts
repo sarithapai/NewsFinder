@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const fetches: Promise<Response>[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalizers: ((data: any) => NormalizedArticle[])[] = [];
 
     // --- NewsAPI ---

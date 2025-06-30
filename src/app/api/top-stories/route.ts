@@ -25,6 +25,7 @@ export async function GET(request: Request) {
 
   try {
     const fetchPromises: Promise<Response>[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const normalizers: ((data: any) => NormalizedArticle[])[] = [];
 
     if (selectedSources.length === 0 || selectedSources.includes("NewsAPI")) {
