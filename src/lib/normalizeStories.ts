@@ -8,7 +8,64 @@ export type NormalizedArticle = {
   author?: string;
 };
 
-export function normalizeNewsAPI(data): NormalizedArticle[] {
+type NewsAPIArticle = {
+  title: string;
+  description: string;
+  urlToImage?: string;
+  source: { name: string };
+  url: string;
+  publishedAt: string;
+  author?: string;
+};
+
+type NewsAPIResponse = {
+  articles: NewsAPIArticle[];
+};
+
+type GuardianArticle = {
+  webTitle: string;
+  webUrl: string;
+  webPublicationDate: string;
+  fields?: {
+    trailText?: string;
+    thumbnail?: string;
+  };
+  tags?: {
+    webTitle: string;
+  }[];
+};
+
+type GuardianResponse = {
+  response: {
+    results: GuardianArticle[];
+  };
+};
+
+type NYTMultimedia = {
+  url: string;
+};
+
+type NYTArticle = {
+  headline?: { main: string };
+  title?: string;
+  abstract?: string;
+  lead_paragraph?: string;
+  multimedia?: NYTMultimedia[];
+  web_url?: string;
+  url?: string;
+  pub_date?: string;
+  published_date?: string;
+  byline?: { original?: string };
+};
+
+type NYTResponse = {
+  response?: {
+    docs: NYTArticle[];
+  };
+  results?: NYTArticle[];
+};
+
+export function normalizeNewsAPI(data: NewsAPIResponse): NormalizedArticle[] {
   return data.articles?.map((item) => ({
     title: item.title,
     description: item.description,
@@ -20,7 +77,7 @@ export function normalizeNewsAPI(data): NormalizedArticle[] {
   }));
 }
 
-export function normalizeGuardian(data): NormalizedArticle[] {
+export function normalizeGuardian(data: GuardianResponse): NormalizedArticle[] {
   return data?.response?.results?.map((item) => ({
     title: item.webTitle,
     description: item.fields?.trailText || "",
@@ -32,17 +89,18 @@ export function normalizeGuardian(data): NormalizedArticle[] {
   }));
 }
 
-export function normalizeNYT(data): NormalizedArticle[] {
+export function normalizeNYT(data: NYTResponse): NormalizedArticle[] {
   const results = data.response?.docs || data.results || [];
+
   return results.map((item) => ({
-    title: item.headline?.main || item.title,
+    title: item.headline?.main || item.title || "",
     description: item.abstract || item.lead_paragraph || "",
     imageUrl: item.multimedia?.[0]
       ? `https://www.nytimes.com/${item.multimedia[0].url}`
       : undefined,
     source: "New York Times",
-    url: item.web_url || item.url,
-    publishedAt: item.pub_date || item.published_date,
+    url: item.web_url || item.url || "",
+    publishedAt: item.pub_date || item.published_date || "",
     author: item.byline?.original?.replace(/^By\s+/i, "") || "",
   }));
 }
